@@ -21,7 +21,7 @@ class AdvertisementService
         return $this->advertisementRepository->list($perPage, $orderBy, $orderType);
     }
 
-    public function store($rq) {
+    public function create($rq) {
         $advertisementStoreData = ['description' => $rq['description'], 'name' => $rq['name'], 'price' => $rq['price']];
         $advertisement = $this->advertisementRepository->create($advertisementStoreData);
         $linkList = $rq['photos'];

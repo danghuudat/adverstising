@@ -32,11 +32,11 @@ class AdvertisementController extends Controller
         }
     }
 
-    public function store(StoreAdvertisementRequest $request)
+    public function create(StoreAdvertisementRequest $request)
     {
         try {
             DB::beginTransaction();
-            $data = $this->advertisementService->store($request->all());
+            $data = $this->advertisementService->create($request->all());
             DB::commit();
             return Response::data($data, HttpResponse::HTTP_OK);
         } catch (\Exception $e) {
