@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Helper\Response;
-use App\Http\Resources\AdvertisingResource;
-use App\Models\Advertisement;
 use App\Http\Requests\StoreAdvertisementRequest;
-use App\Http\Requests\UpdateAdvertisementRequest;
+use App\Http\Resources\AdvertisingResource;
+use App\Http\Resources\ListAdvertisingResource;
+use App\Http\Requests\GetAdvertisementRequest;
 use App\Services\AdvertisementService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Response as HttpResponse;
+use App\Helper\Response;
 
 
 class AdvertisementController extends Controller
@@ -21,11 +21,12 @@ class AdvertisementController extends Controller
         $this->advertisementService = $advertisementService;
     }
 
-    public function index(Request $request)
+    public function list(GetAdvertisementRequest $request)
     {
         try {
-            $data = $this->advertisementService->index($request->size, $request->order_by, $request->order_type);
-            return Response::data($data, 'successfully',config('constant.code.reverse_code_status.CODE_SUCCESS'));
+            $data = $this->advertisementService->list($request->get('per_page'), $request->get('order_by'), $request->get('order_type'));
+            $data = ListAdvertisingResource::collection($data);
+            return Response::data($data, HttpResponse::HTTP_OK);
         } catch (\Exception $e) {
             return Response::dataError($e->getCode(), $e->getMessage());
         }
@@ -33,12 +34,11 @@ class AdvertisementController extends Controller
 
     public function store(StoreAdvertisementRequest $request)
     {
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
             $data = $this->advertisementService->store($request->all());
-            $data = new AdvertisingResource($data);
             DB::commit();
-            return Response::data($data, 'successfully',config('constant.code.reverse_code_status.CODE_SUCCESS'));
+            return Response::data($data, HttpResponse::HTTP_OK);
         } catch (\Exception $e) {
             DB::rollBack();
             return Response::dataError($e->getCode(), $e->getMessage());
@@ -50,8 +50,11 @@ class AdvertisementController extends Controller
     {
         try {
             $data = $this->advertisementService->find($id);
+            if($data == false) {
+                return Response::dataError(HttpResponse::HTTP_NOT_FOUND, 'NOT FOUND');
+            }
             $data = new AdvertisingResource($data);
-            return Response::data($data, 'successfully',config('constant.code.reverse_code_status.CODE_SUCCESS'));
+            return Response::data($data, HttpResponse::HTTP_OK);
         } catch (\Exception $e) {
             return Response::dataError($e->getCode(), $e->getMessage());
         }

@@ -17,13 +17,9 @@ class AdvertisementFactory extends Factory
     {
 
         return [
-            'name' => Str::random(100),
-            'price' => rand(1,5000),
-            'description' => Str::random(1000),
-            'created_at' => Carbon::now()->addDays(1)->addMinutes(rand(0,
-                60 * 23))->addSeconds(rand(0, 60)),
-            'updated_at' => Carbon::now()->addDays(2)->addMinutes(rand(0,
-                60 * 23))->addSeconds(rand(0, 60)),
+            'name' => $this->faker->name,
+            'price' => $this->faker->numberBetween(1, 1000),
+            'description' => $this->faker->text(20),
         ];
     }
 }

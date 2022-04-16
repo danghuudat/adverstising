@@ -10,16 +10,21 @@ class Advertisement extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const MAX_CHARACTERS_NAME = 200;
+    public const MAX_CHARACTERS_DESCRIPTION = 1000;
+    protected $perPage = 10;
+
     protected $fillable = [
         'description', 'name', 'price'
     ];
     protected $guarded = ['id'];
 
     public function photo() {
-        return $this->hasOne(AdvertisementPhoto::class)->oldest();
+        //return $this->hasOne(AdvertisementPhoto::class)->oldest();
+        return $this->hasOne(AdvertisementPhoto::class)->where(['is_main' => true]);
     }
 
-    public function allPhoto() {
+    public function allPhotos() {
         return $this->hasMany(AdvertisementPhoto::class);
     }
 }

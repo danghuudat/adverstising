@@ -22,8 +22,9 @@ class AdvertisementPhotoFactory extends Factory
             'https://viettuts.vn/images/php/php-la-gi.png'];
         $photoIndex = rand(0, 2);
         return [
-            'image_link' => $photoArray[$photoIndex],
-            'advertisement_id' => rand(1, 50)
+            'photo_link' => $photoArray[$photoIndex],
+            'advertisement_id' => rand(1, 50),
+            'is_main' => rand(0, 1)
         ];
     }
 }

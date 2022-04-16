@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Advertisement;
 
 class CreateAdvertisementsTable extends Migration
 {
@@ -15,9 +16,9 @@ class CreateAdvertisementsTable extends Migration
     {
         Schema::create('advertisements', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100)->index();
-            $table->float('price', 8, 2)->index();
-            $table->text('description');
+            $table->string('name', Advertisement::MAX_CHARACTERS_NAME);
+            $table->float('price');
+            $table->string('description', Advertisement::MAX_CHARACTERS_DESCRIPTION);
             $table->softDeletes();
             $table->timestamps();
         });

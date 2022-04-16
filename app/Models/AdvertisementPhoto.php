@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AdvertisementPhoto extends Model
 {
-    protected $table = 'advertisement_photo';
+    protected $table = 'advertisement_photos';
     use HasFactory, SoftDeletes;
 }

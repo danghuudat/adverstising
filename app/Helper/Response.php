@@ -2,6 +2,8 @@
 
 namespace App\Helper;
 
+use Illuminate\Http\Response as HttpResponse;
+
 /**
  * Response Class helper
  */
@@ -14,31 +16,29 @@ class Response
      * @param bool $success
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function data($data = [], $message = 'Successfully', $code = 200, $success = true)
+    public static function data($data = [], $code = HttpResponse::HTTP_OK, $success = true)
     {
         $dataFormat = [
             'success' => $success,
             'data' => $data,
-            'message' => $message,
             'code' => $code
         ];
         return response()->json($dataFormat);
     }
 
     /**
-     * @param array $data
+     * @param $exceptionCode
+     * @param $message
      * @param int $code
-     * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function dataError($code = 401, $message = 'Error')
+    public static function dataError($exceptionCode, $message = 'Error', int $code = HttpResponse::HTTP_INTERNAL_SERVER_ERROR)
     {
-        if(!$code) $code = 401;
         $dataFormat = [
             'success' => false,
             'message' => $message,
-            'code' => $code
+            'code' => $exceptionCode
         ];
-        return response()->json($dataFormat);
+        return response()->json($dataFormat, $code);
     }
 }

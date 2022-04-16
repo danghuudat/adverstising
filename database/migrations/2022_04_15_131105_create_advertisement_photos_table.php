@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Advertisement;
 
-class CreateAdvertisementPhotoTable extends Migration
+class CreateAdvertisementPhotosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,11 @@ class CreateAdvertisementPhotoTable extends Migration
      */
     public function up()
     {
-        Schema::create('advertisement_photo', function (Blueprint $table) {
+        Schema::create('advertisement_photos', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Advertisement::class)->index();
-            $table->text('image_link');
+            $table->text('photo_link');
+            $table->boolean('is_main')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +31,6 @@ class CreateAdvertisementPhotoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('advertisement_photo');
+        Schema::dropIfExists('advertisement_photos');
     }
 }

@@ -2,31 +2,30 @@
 
 namespace App\Http\Requests;
 
-use App\Helper\Response;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\ValidationException;
+use App\Models\Advertisement;
 
 class StoreAdvertisementRequest extends BaseRequest
 {
     public function rules()
     {
         return [
-            'description' => ['required','string','max:2000'],
-            'price' => ['required','numeric'],
-            'name' => ['required','string','max:200'],
-            'images' => ['required','array'],
+            'description' => ['required', 'string', 'max:' . Advertisement::MAX_CHARACTERS_DESCRIPTION],
+            'price' => ['required', 'numeric'],
+            'name' => ['required', 'string', 'max:' . Advertisement::MAX_CHARACTERS_NAME],
+            'photos' => ['required', 'array'],
         ];
     }
 
     public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
-            if(isset($this->images)) {
-                if(is_array($this->images)) {
-                    $linkList = array_count_values($this->images);
+            if (isset($this->photos)) {
+                if (is_array($this->photos)) {
+                    $linkList = array_count_values($this->photos);
                     foreach ($linkList as $key => $value) {
-                        if($value >= 3) {
-                            $validator->errors()->add('images', __('The link is dupplicate 3 times'));
+                        if ($value >= 3) {
+                            $validator->errors()->add('photos', 'The link is duplicate 3 times');
                         }
                     }
                 }
