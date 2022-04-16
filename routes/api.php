@@ -15,8 +15,8 @@ use App\Http\Controllers\AdvertisementController;
 */
 
 Route::group(['prefix' => 'advertisement'], function () {
+    Route::get('/{id}', [AdvertisementController::class, 'show']);
     Route::get('/', [AdvertisementController::class, 'list']);
     Route::post('/', [AdvertisementController::class, 'create']);
-    Route::get('/{id}', [AdvertisementController::class, 'show']);
 });
 

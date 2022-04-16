@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Advertisement;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -41,6 +42,8 @@ class AdvertisementTest extends TestCase
         $this->list_ads_failed_invalid_page();
         $this->list_ads_failed_invalid_order_by();
         $this->list_ads_failed_invalid_order_type();
+        $this->find_ads_failed_array_fields();
+        $this->find_ads_failed_invalid_fields();
     }
 
     public function store_ads_success()
@@ -85,7 +88,7 @@ class AdvertisementTest extends TestCase
             'name' => Str::random(Advertisement::MAX_CHARACTERS_NAME + rand(1, 1000)),
             'description' => "test description",
             'price' => 1,
-            'images' => [
+            'photos' => [
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg",
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg"
             ]
@@ -106,7 +109,7 @@ class AdvertisementTest extends TestCase
             'name' => Carbon::now(),
             'description' => "test description",
             'price' => 1,
-            'images' => [
+            'photos' => [
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg",
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg"
             ]
@@ -126,7 +129,7 @@ class AdvertisementTest extends TestCase
         $data = [
             'name' => "test name",
             'price' => 1,
-            'images' => [
+            'photos' => [
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg",
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg"
             ]
@@ -148,7 +151,7 @@ class AdvertisementTest extends TestCase
             'description' => Str::random(Advertisement::MAX_CHARACTERS_DESCRIPTION + rand(1, 1000)),
             'name' => "test name",
             'price' => 1,
-            'images' => [
+            'photos' => [
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg",
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg"
             ]
@@ -169,7 +172,7 @@ class AdvertisementTest extends TestCase
             'description' => Carbon::now(),
             'name' => "test name",
             'price' => 1,
-            'images' => [
+            'photos' => [
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg",
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg"
             ]
@@ -189,7 +192,7 @@ class AdvertisementTest extends TestCase
         $data = [
             'description' => "test description",
             'name' => "test name",
-            'images' => [
+            'photos' => [
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg",
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg"
             ]
@@ -211,7 +214,7 @@ class AdvertisementTest extends TestCase
             'description' => 'test description',
             'name' => "test name",
             'price' => Str::random(1),
-            'images' => [
+            'photos' => [
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg",
                 "http://dotnetguru.org/wp-content/uploads/2019/08/php.jpg"
             ]
@@ -404,5 +407,37 @@ class AdvertisementTest extends TestCase
         ]);
     }
 
+    public function find_ads_failed_array_fields(){
+        $max_id = DB::table('advertisements')->max('id');
+        $id = rand(1, $max_id);
+        $data = [
+            "fields" => Str::random(2)
+        ];
+        dump('api/advertisement/'.$id);
+        dump($data);
+        $response = $this->getJson('api/advertisement/'.$id, $data);
+        $response->assertStatus(500)->assertJson([
+            'message' => [
+                'fields' => [
+                    'The fields must be an array.'
+                ],
+            ]
+        ]);
+    }
 
+    public function find_ads_failed_invalid_fields(){
+        $max_id = DB::table('advertisements')->max('id');
+        $id = rand(1, $max_id);
+        $data = [
+            "fields" => [Str::random(2), Str::random(2)]
+        ];
+        $response = $this->getJson('api/advertisement/'.$id, $data);
+        $response->assertStatus(500)->assertJson([
+            'message' => [
+                'fields' => [
+                    'The fields is invalid.'
+                ],
+            ]
+        ]);
+    }
 }

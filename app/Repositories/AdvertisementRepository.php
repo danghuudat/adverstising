@@ -23,7 +23,8 @@ class AdvertisementRepository extends BaseRepository
 
     public function getRelation($id)
     {
-        $advertisement = Advertisement::query()->with(['allPhotos', 'photo'])->find($id);
+        $query = Advertisement::query()->with(['allPhotos', 'photo']);
+        $advertisement = $query->find($id);
         if($advertisement) {
             return $advertisement;
         }

@@ -9,16 +9,23 @@ class AdvertisingResource extends JsonResource
 
     public function toArray($request)
     {
+        $returnData = [
+            'name' => $this['data']->name,
+            'price' => $this['data']->price,
+            'main_photo' => ($this['data']->photo && $this['data']->photo->photo_link) ? $this['data']->photo->photo_link : null,
+        ];
         $linkPhotoList = [];
-        foreach ($this->allPhotos as  $photo){
+        foreach ($this['data']->allPhotos as  $photo){
             $linkPhotoList[] = $photo->photo_link;
         }
-        return [
-            'name' => $this->name,
-            'price' => $this->price,
-            'main_photo' => ($this->photo && $this->photo->photo_link) ? $this->photo->photo_link : null,
-            'all_photos' => $linkPhotoList,
-            'description' => $this->description,
-        ];
+        if($this['request']['fields']) {
+            if(in_array("link", $this['request']['fields'])) {
+                $returnData['all_photos'] = $linkPhotoList;
+            }
+            if(in_array("description", $this['request']['fields'])) {
+                $returnData['description'] = $this['data']->description;
+            }
+        }
+        return $returnData;
     }
 }

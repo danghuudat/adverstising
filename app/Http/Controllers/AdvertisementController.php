@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShowAdvertisementRequest;
 use App\Http\Requests\StoreAdvertisementRequest;
 use App\Http\Resources\AdvertisingResource;
 use App\Http\Resources\ListAdvertisingResource;
@@ -46,14 +47,15 @@ class AdvertisementController extends Controller
     }
 
 
-    public function show($id)
+    public function show(ShowAdvertisementRequest $request, $id)
     {
         try {
             $data = $this->advertisementService->find($id);
             if($data == false) {
                 return Response::dataError(HttpResponse::HTTP_NOT_FOUND, 'NOT FOUND');
             }
-            $data = new AdvertisingResource($data);
+            $resourceData = ['data' => $data, 'request' => $request->all()];
+            $data = new AdvertisingResource($resourceData);
             return Response::data($data, HttpResponse::HTTP_OK);
         } catch (\Exception $e) {
             return Response::dataError($e->getCode(), $e->getMessage());
