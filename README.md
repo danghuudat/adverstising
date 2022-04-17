@@ -1,6 +1,15 @@
-## Installation
+## Normal Installation
 
-Install [MySql](https://www.mysql.com/) and [PHP](https://www.php.net/) as environment <br>
+Install [MySql](https://www.mysql.com/), [PHP](https://www.php.net/) and [Composer](https://getcomposer.org/) as environment <br>
+- Run: "composer install"<br>
+- Copy .env.example file to .env on the root folder<br>
+- Run "php artisan key:generate" to generate app key in .env <br>
+- Run "php artisan migrate" to run create table <br>
+- Run "php artisan db:seed" to have test data<br>
+- Run "php artisan serve"<br>
+- Run API with domain http://localhost:8000 or any domain which is showed in the command tab
+## Docker Installation
+- Run docker-compose up
 - Run: "composer install"<br>
 - Copy .env.example file to .env on the root folder<br>
 - Run "php artisan key:generate" to generate app key in .env <br>
