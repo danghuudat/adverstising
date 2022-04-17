@@ -31,4 +31,4 @@ I think the field "name" and "title" is the same so i choosed to use "name".
 
 I created unit test for all business case i think it's right.
 
-I put the document in document foler
+I put the document in document folder
