@@ -30,3 +30,5 @@ i'm not sure about this but i validated not allow 3 same links in an advertiseme
 I think the field "name" and "title" is the same so i choosed to use "name".
 
 I created unit test for all business case i think it's right.
+
+I put the document in document foler
