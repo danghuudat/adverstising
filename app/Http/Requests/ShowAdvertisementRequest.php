@@ -21,7 +21,7 @@ class ShowAdvertisementRequest extends BaseRequest
                 if(is_array($this->fields)) {
                     foreach($this->fields as $field) {
                         if($field != 'description' && $field != 'link') {
-                            $validator->errors()->add('fields', 'The fields is invalid');
+                            $validator->errors()->add('fields', 'The fields is invalid.');
                         }
                     }
                 }

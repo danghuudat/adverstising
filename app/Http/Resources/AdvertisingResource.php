@@ -18,7 +18,7 @@ class AdvertisingResource extends JsonResource
         foreach ($this['data']->allPhotos as  $photo){
             $linkPhotoList[] = $photo->photo_link;
         }
-        if($this['request']['fields']) {
+        if(isset($this['request']['fields'])) {
             if(in_array("link", $this['request']['fields'])) {
                 $returnData['all_photos'] = $linkPhotoList;
             }

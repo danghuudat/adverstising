@@ -44,6 +44,9 @@ class AdvertisementTest extends TestCase
         $this->list_ads_failed_invalid_order_type();
         $this->find_ads_failed_array_fields();
         $this->find_ads_failed_invalid_fields();
+        $this->find_ads_failed_invalid_id();
+        $this->find_ads_success_with_all_data();
+        $this->find_ads_success_without_fields();
     }
 
     public function store_ads_success()
@@ -413,9 +416,8 @@ class AdvertisementTest extends TestCase
         $data = [
             "fields" => Str::random(2)
         ];
-        dump('api/advertisement/'.$id);
-        dump($data);
-        $response = $this->getJson('api/advertisement/'.$id, $data);
+        $url = 'api/advertisement/'.$id.'?fields='.$data['fields'];
+        $response = $this->getJson($url);
         $response->assertStatus(500)->assertJson([
             'message' => [
                 'fields' => [
@@ -428,10 +430,19 @@ class AdvertisementTest extends TestCase
     public function find_ads_failed_invalid_fields(){
         $max_id = DB::table('advertisements')->max('id');
         $id = rand(1, $max_id);
-        $data = [
+        $dataFields = [
             "fields" => [Str::random(2), Str::random(2)]
         ];
-        $response = $this->getJson('api/advertisement/'.$id, $data);
+        $url = 'api/advertisement/'.$id;
+        foreach ($dataFields['fields'] as $key => $field){
+            if($key == 0) {
+                $prefix = '?';
+            } else {
+                $prefix = '&';
+            }
+            $url = $url .''.$prefix. 'fields['.$key.']='.$field;
+        }
+        $response = $this->getJson($url);
         $response->assertStatus(500)->assertJson([
             'message' => [
                 'fields' => [
@@ -439,5 +450,41 @@ class AdvertisementTest extends TestCase
                 ],
             ]
         ]);
+    }
+
+    public function find_ads_failed_invalid_id(){
+        $max_id = DB::table('advertisements')->max('id');
+        $id = $max_id + 1;
+        $response = $this->getJson('api/advertisement/'.$id);
+        $response->assertStatus(500)->assertJson([
+            'message' => 'NOT FOUND'
+        ]);
+    }
+
+    public function find_ads_success_with_all_data() {
+        $max_id = DB::table('advertisements')->max('id');
+        $id = rand(1, $max_id);
+        $dataFields = [
+            "fields" => ['link', 'description']
+        ];
+        $url = 'api/advertisement/'.$id;
+        foreach ($dataFields['fields'] as $key => $field){
+            if($key == 0) {
+                $prefix = '?';
+            } else {
+                $prefix = '&';
+            }
+            $url = $url .''.$prefix. 'fields['.$key.']='.$field;
+        }
+        $response = $this->getJson($url);
+        $response->assertStatus(200);
+    }
+
+    public function find_ads_success_without_fields() {
+        $max_id = DB::table('advertisements')->max('id');
+        $id = rand(1, $max_id);
+        $url = 'api/advertisement/'.$id;
+        $response = $this->getJson($url);
+        $response->assertStatus(200);
     }
 }
