@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+    mariadb:
+        image: docker.io/bitnami/mariadb:10.6
+        ports:
+            - '3306:3306'
+        environment:
+            # ALLOW_EMPTY_PASSWORD is recommended only for development.
+            - MARIADB_ROOT_USER=root
+            - MARIADB_ROOT_PASSWORD=root
+            - MARIADB_DATABASE=bitnami_myapp
+    myapp:
+        container_name: myapp
+        image: docker.io/bitnami/laravel:8
+        ports:
+            - '8000:8000'
+        environment:
+            - DB_HOST=mariadb
+            - DB_PORT=3306
+            - DB_USERNAME=root
+            - DB_PASSWORD=root
+            - DB_DATABASE=bitnami_myapp
+        volumes:
+            - './:/app'
+        depends_on:
+            - mariadb
